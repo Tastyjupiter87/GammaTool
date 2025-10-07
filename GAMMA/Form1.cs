@@ -7,11 +7,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 namespace GAMMA
 {
     public partial class Form1 : Form
     {
+        // Global hotkey interop
+        [DllImport("user32.dll")]
+        private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
+
+        [DllImport("user32.dll")]
+        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+
+        private const int WM_HOTKEY = 0x0312;
+        private const int HOTKEY_ID_PERIOD = 1;
+        private const uint MOD_ALT = 0x0001;
+        private const uint MOD_CONTROL = 0x0002;
+        private const uint MOD_SHIFT = 0x0004;
+
         private bool isRunning = false;
         private DateTime serverTimeBase;
         private int dayDurationMinutes = 45; // 45 real minutes = day
@@ -20,18 +34,28 @@ namespace GAMMA
         private GammaController gammaController = new GammaController();
         private string currentPhase = ""; // Track current phase for automatic switching
         private double speedMultiplier = 1.0; // Speed multiplier for time acceleration
+        private Keys currentHotkeyKey = Keys.OemPeriod; // Current key used with Ctrl+Alt
 
         public Form1()
         {
             InitializeComponent();
             InitializeUI();
+            // Enable form-level key handling
+            this.KeyPreview = true;
+            this.KeyDown += Form1_KeyDown;
+            this.Load += Form1_Load;
             this.FormClosing += Form1_FormClosing;
+
+            // Set custom icon from PNG path
+            TrySetFormIconFromPng("C\\Users\\robin\\Documents\\prof\\GammaTool.png");
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             // Restore original gamma when closing
             gammaController.RestoreOriginalGamma();
+            // Unregister global hotkeys
+            try { UnregisterHotKey(this.Handle, HOTKEY_ID_PERIOD); } catch { }
         }
 
         private void InitializeUI()
@@ -53,7 +77,20 @@ namespace GAMMA
             
             // Initialize cycle status
             UpdateCycleStatus();
-            UpdateRustDetectionStatus();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            // Register global hotkey for '.' (period) with Ctrl+Alt modifiers only
+            try
+            {
+                // Use Ctrl+Alt+. to work better in fullscreen apps and avoid conflicts
+                RegisterHotKey(this.Handle, HOTKEY_ID_PERIOD, MOD_CONTROL | MOD_ALT, (uint)currentHotkeyKey);
+            }
+            catch { }
+
+            // Ensure the form uses the application's icon
+            try { this.Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath); } catch { }
         }
 
         private void btnToggle_Click(object sender, EventArgs e)
@@ -244,7 +281,6 @@ namespace GAMMA
             }
             
             UpdateCycleStatus();
-            UpdateRustDetectionStatus();
         }
 
         private void UpdateServerTimeDisplay()
@@ -305,6 +341,8 @@ namespace GAMMA
                 lblTimeRemaining.Text = "Time Remaining: --:--";
                 return;
             }
+
+            // No override; allow automatic switching
 
             // Get the current game time to determine day/night phase
             var currentGameTime = GetCurrentGameTime();
@@ -460,11 +498,177 @@ namespace GAMMA
             gammaController.SetGamma(targetGamma);
         }
 
-        private void UpdateRustDetectionStatus()
+        private bool isDayMode = true;
+
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            // TODO: Implement actual Rust process detection
-            // For now, just show a placeholder
-            lblRustStatus.Text = "Rust Status: Not Detected";
+            // Use global hotkey only (Ctrl+Alt+.); ignore plain '.'
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == WM_HOTKEY)
+            {
+                int id = m.WParam.ToInt32();
+                if (id == HOTKEY_ID_PERIOD)
+                {
+                    ToggleDayNight();
+                }
+            }
+            base.WndProc(ref m);
+        }
+
+        private void ToggleDayNight()
+        {
+            // Toggle between day and night by setting representative times and gamma
+            isDayMode = !isDayMode;
+
+            if (isDayMode)
+            {
+                // Day
+                txtHour.Text = "12";
+                txtMinute.Text = "00";
+                serverTimeBase = DateTime.Now;
+                ApplyDayGamma();
+            }
+            else
+            {
+                // Night
+                txtHour.Text = "00";
+                txtMinute.Text = "00";
+                serverTimeBase = DateTime.Now;
+                ApplyNightGamma();
+            }
+
+            if (isRunning)
+            {
+                UpdateRunningGameTime();
+            }
+            else
+            {
+                UpdateServerTimeDisplay();
+            }
+        }
+
+        // Removed gamma override; using ToggleDayNight
+
+        private void txtHotkeyKey_KeyDown(object sender, KeyEventArgs e)
+        {
+            // Capture key and modifiers for custom hotkey
+            e.SuppressKeyPress = true;
+            try
+            {
+                // Update modifier checkboxes if present
+                if (chkCtrl != null) chkCtrl.Checked = true; // Always Ctrl+Alt
+                if (chkAlt != null) chkAlt.Checked = true;
+                if (chkShift != null) chkShift.Checked = false;
+
+                // Store the key pressed (avoid modifier-only keys)
+                Keys key = e.KeyCode;
+                if (key == Keys.ControlKey || key == Keys.ShiftKey || key == Keys.Menu)
+                {
+                    // Wait for a non-modifier key
+                    return;
+                }
+                if (txtHotkeyKey != null)
+                {
+                    txtHotkeyKey.Text = key.ToString();
+                }
+            }
+            catch { }
+        }
+
+        private void btnApplyHotkey_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Build modifiers flag
+                uint modifiers = MOD_CONTROL | MOD_ALT; // Always Ctrl+Alt
+
+                // Parse key
+                if (txtHotkeyKey == null || string.IsNullOrWhiteSpace(txtHotkeyKey.Text))
+                {
+                    MessageBox.Show("Choose a hotkey key by clicking the box and pressing a key.");
+                    return;
+                }
+
+                Keys key;
+                if (!Enum.TryParse(txtHotkeyKey.Text, out key))
+                {
+                    MessageBox.Show("Unrecognized key.");
+                    return;
+                }
+
+                // Unregister existing
+                try { UnregisterHotKey(this.Handle, HOTKEY_ID_PERIOD); } catch { }
+
+                // Register new
+                if (!RegisterHotKey(this.Handle, HOTKEY_ID_PERIOD, modifiers, (uint)key))
+                {
+                    MessageBox.Show("Failed to register hotkey. It might be in use by another app.");
+                    return;
+                }
+
+                // Update hint label
+                currentHotkeyKey = key;
+                string hint = BuildHotkeyHint(modifiers, currentHotkeyKey);
+                if (lblKeybindHint != null)
+                {
+                    lblKeybindHint.Text = hint;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error applying hotkey: {ex.Message}");
+            }
+        }
+
+        private string BuildHotkeyHint(uint modifiers, Keys key)
+        {
+            var parts = new List<string>();
+            if ((modifiers & MOD_CONTROL) != 0) parts.Add("Ctrl");
+            if ((modifiers & MOD_ALT) != 0) parts.Add("Alt");
+            if ((modifiers & MOD_SHIFT) != 0) parts.Add("Shift");
+            parts.Add(KeyToDisplay(key));
+            return "Press " + string.Join("+", parts) + " to toggle";
+        }
+
+        private string KeyToDisplay(Keys key)
+        {
+            if (key == Keys.OemPeriod) return ".";
+            return key.ToString();
+        }
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        private static extern bool DestroyIcon(IntPtr handle);
+
+        private void TrySetFormIconFromPng(string pngPath)
+        {
+            try
+            {
+                if (System.IO.File.Exists(pngPath))
+                {
+                    using (var bitmap = new Bitmap(pngPath))
+                    {
+                        IntPtr hIcon = bitmap.GetHicon();
+                        using (var icon = Icon.FromHandle(hIcon))
+                        {
+                            // Clone to detach from HICON before destroying it
+                            this.Icon = (Icon)icon.Clone();
+                        }
+                        DestroyIcon(hIcon);
+                    }
+                }
+            }
+            catch
+            {
+                // Ignore icon errors; keep default icon
+            }
+        }
+
+        private void grpTimeSettings_Enter(object sender, EventArgs e)
+        {
+
         }
     }
 }

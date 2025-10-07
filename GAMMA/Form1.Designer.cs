@@ -47,7 +47,6 @@
             this.trackDayGamma = new System.Windows.Forms.TrackBar();
             this.lblDayGamma = new System.Windows.Forms.Label();
             this.grpStatus = new System.Windows.Forms.GroupBox();
-            this.grpRustDetection = new System.Windows.Forms.GroupBox();
             this.grpTimeSettings = new System.Windows.Forms.GroupBox();
             this.lblCurrentServerTime = new System.Windows.Forms.Label();
             this.btnSetTime = new System.Windows.Forms.Button();
@@ -57,12 +56,21 @@
             this.lblServerTime = new System.Windows.Forms.Label();
             this.lblVersion = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.lblKeybindHint = new System.Windows.Forms.Label();
+            this.grpHotkeySettings = new System.Windows.Forms.GroupBox();
+            this.btnApplyHotkey = new System.Windows.Forms.Button();
+            this.txtHotkeyKey = new System.Windows.Forms.TextBox();
+            this.lblHotkeyKey = new System.Windows.Forms.Label();
+            this.chkShift = new System.Windows.Forms.CheckBox();
+            this.chkAlt = new System.Windows.Forms.CheckBox();
+            this.chkCtrl = new System.Windows.Forms.CheckBox();
+            this.lblModifiers = new System.Windows.Forms.Label();
             this.grpGammaSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackNightGamma)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackDayGamma)).BeginInit();
             this.grpStatus.SuspendLayout();
-            this.grpRustDetection.SuspendLayout();
             this.grpTimeSettings.SuspendLayout();
+            this.grpHotkeySettings.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnToggle
@@ -180,10 +188,10 @@
             this.btnResetNight.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnResetNight.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnResetNight.ForeColor = System.Drawing.Color.White;
-            this.btnResetNight.Location = new System.Drawing.Point(340, 130);
+            this.btnResetNight.Location = new System.Drawing.Point(340, 122);
             this.btnResetNight.Margin = new System.Windows.Forms.Padding(4);
             this.btnResetNight.Name = "btnResetNight";
-            this.btnResetNight.Size = new System.Drawing.Size(60, 25);
+            this.btnResetNight.Size = new System.Drawing.Size(100, 32);
             this.btnResetNight.TabIndex = 10;
             this.btnResetNight.Text = "Default";
             this.btnResetNight.UseVisualStyleBackColor = false;
@@ -195,10 +203,10 @@
             this.btnResetDay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnResetDay.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnResetDay.ForeColor = System.Drawing.Color.White;
-            this.btnResetDay.Location = new System.Drawing.Point(340, 85);
+            this.btnResetDay.Location = new System.Drawing.Point(340, 71);
             this.btnResetDay.Margin = new System.Windows.Forms.Padding(4);
             this.btnResetDay.Name = "btnResetDay";
-            this.btnResetDay.Size = new System.Drawing.Size(60, 25);
+            this.btnResetDay.Size = new System.Drawing.Size(100, 30);
             this.btnResetDay.TabIndex = 9;
             this.btnResetDay.Text = "Default";
             this.btnResetDay.UseVisualStyleBackColor = false;
@@ -227,9 +235,9 @@
             this.lblNightValue.Location = new System.Drawing.Point(413, 105);
             this.lblNightValue.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblNightValue.Name = "lblNightValue";
-            this.lblNightValue.Size = new System.Drawing.Size(27, 20);
+            this.lblNightValue.Size = new System.Drawing.Size(36, 20);
             this.lblNightValue.TabIndex = 5;
-            this.lblNightValue.Text = "64";
+            this.lblNightValue.Text = "128";
             // 
             // lblDayValue
             // 
@@ -253,7 +261,7 @@
             this.trackNightGamma.Size = new System.Drawing.Size(267, 56);
             this.trackNightGamma.TabIndex = 3;
             this.trackNightGamma.TickFrequency = 25;
-            this.trackNightGamma.Value = 64;
+            this.trackNightGamma.Value = 128;
             this.trackNightGamma.ValueChanged += new System.EventHandler(this.trackNightGamma_ValueChanged);
             // 
             // lblNightGamma
@@ -296,7 +304,7 @@
             this.grpStatus.Controls.Add(this.lblTimeRemaining);
             this.grpStatus.Controls.Add(this.lblCyclePhase);
             this.grpStatus.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grpStatus.Location = new System.Drawing.Point(16, 431);
+            this.grpStatus.Location = new System.Drawing.Point(16, 554);
             this.grpStatus.Margin = new System.Windows.Forms.Padding(4);
             this.grpStatus.Name = "grpStatus";
             this.grpStatus.Padding = new System.Windows.Forms.Padding(4);
@@ -304,19 +312,6 @@
             this.grpStatus.TabIndex = 4;
             this.grpStatus.TabStop = false;
             this.grpStatus.Text = "Cycle Status";
-            // 
-            // grpRustDetection
-            // 
-            this.grpRustDetection.Controls.Add(this.lblRustStatus);
-            this.grpRustDetection.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grpRustDetection.Location = new System.Drawing.Point(16, 554);
-            this.grpRustDetection.Margin = new System.Windows.Forms.Padding(4);
-            this.grpRustDetection.Name = "grpRustDetection";
-            this.grpRustDetection.Padding = new System.Windows.Forms.Padding(4);
-            this.grpRustDetection.Size = new System.Drawing.Size(467, 74);
-            this.grpRustDetection.TabIndex = 5;
-            this.grpRustDetection.TabStop = false;
-            this.grpRustDetection.Text = "Game Detection";
             // 
             // grpTimeSettings
             // 
@@ -327,7 +322,7 @@
             this.grpTimeSettings.Controls.Add(this.txtHour);
             this.grpTimeSettings.Controls.Add(this.lblServerTime);
             this.grpTimeSettings.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.grpTimeSettings.Location = new System.Drawing.Point(16, 308);
+            this.grpTimeSettings.Location = new System.Drawing.Point(13, 421);
             this.grpTimeSettings.Margin = new System.Windows.Forms.Padding(4);
             this.grpTimeSettings.Name = "grpTimeSettings";
             this.grpTimeSettings.Padding = new System.Windows.Forms.Padding(4);
@@ -335,6 +330,7 @@
             this.grpTimeSettings.TabIndex = 3;
             this.grpTimeSettings.TabStop = false;
             this.grpTimeSettings.Text = "Game Time Settings";
+            this.grpTimeSettings.Enter += new System.EventHandler(this.grpTimeSettings_Enter);
             // 
             // lblCurrentServerTime
             // 
@@ -425,14 +421,109 @@
             this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // lblKeybindHint
+            // 
+            this.lblKeybindHint.AutoSize = true;
+            this.lblKeybindHint.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblKeybindHint.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(108)))), ((int)(((byte)(117)))), ((int)(((byte)(125)))));
+            this.lblKeybindHint.Location = new System.Drawing.Point(370, 60);
+            this.lblKeybindHint.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblKeybindHint.Name = "lblKeybindHint";
+            this.lblKeybindHint.Size = new System.Drawing.Size(176, 19);
+            this.lblKeybindHint.TabIndex = 12;
+            this.lblKeybindHint.Text = "Press Ctrl+Alt+\'.\' to toggle";
+            // 
+            // grpHotkeySettings
+            // 
+            this.grpHotkeySettings.Controls.Add(this.btnApplyHotkey);
+            this.grpHotkeySettings.Controls.Add(this.txtHotkeyKey);
+            this.grpHotkeySettings.Controls.Add(this.lblHotkeyKey);
+            this.grpHotkeySettings.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.grpHotkeySettings.Location = new System.Drawing.Point(16, 308);
+            this.grpHotkeySettings.Margin = new System.Windows.Forms.Padding(4);
+            this.grpHotkeySettings.Name = "grpHotkeySettings";
+            this.grpHotkeySettings.Padding = new System.Windows.Forms.Padding(4);
+            this.grpHotkeySettings.Size = new System.Drawing.Size(467, 105);
+            this.grpHotkeySettings.TabIndex = 3;
+            this.grpHotkeySettings.TabStop = false;
+            this.grpHotkeySettings.Text = "Hotkey Settings";
+            // 
+            // btnApplyHotkey
+            // 
+            this.btnApplyHotkey.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(123)))), ((int)(((byte)(255)))));
+            this.btnApplyHotkey.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnApplyHotkey.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnApplyHotkey.ForeColor = System.Drawing.Color.White;
+            this.btnApplyHotkey.Location = new System.Drawing.Point(380, 58);
+            this.btnApplyHotkey.Margin = new System.Windows.Forms.Padding(4);
+            this.btnApplyHotkey.Name = "btnApplyHotkey";
+            this.btnApplyHotkey.Size = new System.Drawing.Size(67, 31);
+            this.btnApplyHotkey.TabIndex = 6;
+            this.btnApplyHotkey.Text = "APPLY";
+            this.btnApplyHotkey.UseVisualStyleBackColor = false;
+            this.btnApplyHotkey.Click += new System.EventHandler(this.btnApplyHotkey_Click);
+            // 
+            // txtHotkeyKey
+            // 
+            this.txtHotkeyKey.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtHotkeyKey.Location = new System.Drawing.Point(276, 58);
+            this.txtHotkeyKey.Margin = new System.Windows.Forms.Padding(4);
+            this.txtHotkeyKey.MaxLength = 50;
+            this.txtHotkeyKey.Name = "txtHotkeyKey";
+            this.txtHotkeyKey.ReadOnly = true;
+            this.txtHotkeyKey.Size = new System.Drawing.Size(92, 30);
+            this.txtHotkeyKey.TabIndex = 5;
+            this.txtHotkeyKey.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtHotkeyKey.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtHotkeyKey_KeyDown);
+            // 
+            // lblHotkeyKey
+            // 
+            this.lblHotkeyKey.AutoSize = true;
+            this.lblHotkeyKey.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblHotkeyKey.Location = new System.Drawing.Point(232, 62);
+            this.lblHotkeyKey.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblHotkeyKey.Name = "lblHotkeyKey";
+            this.lblHotkeyKey.Size = new System.Drawing.Size(36, 20);
+            this.lblHotkeyKey.TabIndex = 4;
+            this.lblHotkeyKey.Text = "Key:";
+            // 
+            // chkShift
+            // 
+            this.chkShift.Location = new System.Drawing.Point(0, 0);
+            this.chkShift.Name = "chkShift";
+            this.chkShift.Size = new System.Drawing.Size(104, 24);
+            this.chkShift.TabIndex = 0;
+            // 
+            // chkAlt
+            // 
+            this.chkAlt.Location = new System.Drawing.Point(0, 0);
+            this.chkAlt.Name = "chkAlt";
+            this.chkAlt.Size = new System.Drawing.Size(104, 24);
+            this.chkAlt.TabIndex = 0;
+            // 
+            // chkCtrl
+            // 
+            this.chkCtrl.Location = new System.Drawing.Point(0, 0);
+            this.chkCtrl.Name = "chkCtrl";
+            this.chkCtrl.Size = new System.Drawing.Size(104, 24);
+            this.chkCtrl.TabIndex = 0;
+            // 
+            // lblModifiers
+            // 
+            this.lblModifiers.Location = new System.Drawing.Point(0, 0);
+            this.lblModifiers.Name = "lblModifiers";
+            this.lblModifiers.Size = new System.Drawing.Size(100, 23);
+            this.lblModifiers.TabIndex = 0;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(248)))), ((int)(((byte)(249)))), ((int)(((byte)(250)))));
-            this.ClientSize = new System.Drawing.Size(507, 652);
+            this.ClientSize = new System.Drawing.Size(620, 680);
             this.Controls.Add(this.lblVersion);
-            this.Controls.Add(this.grpRustDetection);
+            this.Controls.Add(this.lblKeybindHint);
+            this.Controls.Add(this.grpHotkeySettings);
             this.Controls.Add(this.grpStatus);
             this.Controls.Add(this.grpTimeSettings);
             this.Controls.Add(this.grpGammaSettings);
@@ -451,10 +542,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.trackDayGamma)).EndInit();
             this.grpStatus.ResumeLayout(false);
             this.grpStatus.PerformLayout();
-            this.grpRustDetection.ResumeLayout(false);
-            this.grpRustDetection.PerformLayout();
             this.grpTimeSettings.ResumeLayout(false);
             this.grpTimeSettings.PerformLayout();
+            this.grpHotkeySettings.ResumeLayout(false);
+            this.grpHotkeySettings.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -490,6 +581,15 @@
         private System.Windows.Forms.Label lblCurrentServerTime;
         private System.Windows.Forms.Label lblVersion;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Label lblKeybindHint;
+        private System.Windows.Forms.GroupBox grpHotkeySettings;
+        private System.Windows.Forms.Label lblModifiers;
+        private System.Windows.Forms.CheckBox chkCtrl;
+        private System.Windows.Forms.CheckBox chkAlt;
+        private System.Windows.Forms.CheckBox chkShift;
+        private System.Windows.Forms.Label lblHotkeyKey;
+        private System.Windows.Forms.TextBox txtHotkeyKey;
+        private System.Windows.Forms.Button btnApplyHotkey;
     }
 }
 
